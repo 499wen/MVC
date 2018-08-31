@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>日志</title>
+</head>
+<body style="margin: 0; padding: 0;">
+
+    <form action="">
+
+            <input type="text" name="search" id="" value="<?=@$_GET['search']?>" placeholder=""> 
+            时间：
+            <input type="text" placeholder="" value="<?php echo isset($_GET['search']) && $_GET['search'] ? '':@$_GET['time_start']; ?>" name="time_start" id=""> 至 
+            <input type="text" placeholder="" value="<?php echo isset($_GET['search']) && $_GET['search']? '':@$_GET['time_end']; ?>" name="time_end" id="">  
+            : <input type="submit" value=" 搜索">
+
+    </form>
+    <hr>
+
+    <table border="1" width="100%" style="text-align: center;font-size: 15px;padding: 0;">
+        <tr>
+            <th>编号</th>
+            <th>标题</th>
+            <th width="40%">文章内容</th>
+            <th>
+                添加时间 
+                <a href="?<?=getUrl(['time_asc','time_desc','play_asc','play_desc'])?>time_asc=asc" width="20px">↑</a> 
+                <a href="?<?=getUrl(['time_asc','time_desc','play_asc','play_desc'])?>time_desc=desc">↓</a> 
+            </th>
+            <th>修改时间</th>
+            <th>
+                获赞数
+                <a href="?<?=getUrl(['play_asc','play_desc','time_asc','time_desc'])?>play_asc=asc" width="20px">↑</a> 
+                <a href="?<?=getUrl(['play_asc','play_desc','time_asc','time_desc'])?>play_desc=desc">↓</a> 
+            </th>
+            <th>操作</th>
+        </tr>
+        <?php foreach( $arr as $v ): ?>
+        <tr height="50">
+            <td><?=$v['id']?></td>
+            <td><?=$v['title']?></td>
+            <td><?=$v['content']?></td>
+            <td><?=$v['created_at']?></td>
+            <td><?=$v['created_up']?></td>
+            <td><?=$v['play']?></td>
+            <td>
+                <a href="">修改</a>
+                <a href="">删除</a>
+
+            </td>
+
+        </tr>
+        <?php endforeach ?>
+    </table>
+    <?php for($i = 0; $i < $totalPage; $i++){ ?>
+
+     
+    <a href="?<?=getUrl()?>page=<?=$i+1?>"><?=$i+1?></a>
+
+    <?php } ?>
+</body>
+</html>
