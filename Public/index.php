@@ -41,6 +41,7 @@ function view($file , $data = []){
     require($view);
 }
 
+// 获取url 地址
 function getUrl($except = []){
     // ['odby','odway']
     // 循环删除变量
@@ -67,5 +68,11 @@ function getUrl($except = []){
 
     return $str;
 
+}
+
+// 生成静态页
+function staticPage (){
+    // 开启缓存区
+    ob_start();
 }
 ?>

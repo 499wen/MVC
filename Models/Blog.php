@@ -13,6 +13,10 @@
             $this->pdo = new PDO("mysql:host=localhost;dbname=mvc","root","");
             $this->pdo->exec("set names utf8");
 
+            
+        }
+
+        function blog (){
             $where = "1 = 1 ";
 
             // 搜索 - title content
@@ -115,6 +119,13 @@
                 $b .= iconv('GB2312', 'UTF-8', $a);
             }
             return $b;
+        }
+
+        // 生成静态页面
+        function staticPage (){
+            $stmt = $this->pdo->query("select id,title,content from mvc_blog");
+            $arr = $stmt ->fetchAll(PDO::FETCH_ASSOC);
+            return $arr;
         }
 
     }
