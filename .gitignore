@@ -1,1 +1,4 @@
 /Public/staticPage/
+/vendor/
+/composer.lock
+/Public/index.html

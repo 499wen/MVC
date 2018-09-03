@@ -5,29 +5,37 @@ define("ROOT", dirname(__FILE__)."/../");
 // 自动加载 函数
 function autoload($class){
     $path = str_replace('\\', '/', $class);
-
+    echo "<br>".$path;
     require(ROOT . $path . '.php');
 }
 
 spl_autoload_register("autoload");
 
 // 设置路由
-// echo "<pre>";
 
-$route = $_SERVER["PATH_INFO"];
+if( php_sapi_name() == "cli"){
 
-// 取出控制台  与  其对应方法
-if(isset($route) == "" || $route == "/"){
-    $controller = "Index";
-    $active = "index";
+    $controller = ucfirst($argv[1]);
+    $active = $argv[2];
+
 }else {
-    $controller = ucfirst(explode("/", $route)[1]);
-    $active = explode("/", $route)[2];
+    $route = $_SERVER["PATH_INFO"];
 
+    // 取出控制台  与  其对应方法
+    if(isset($route) == "" || $route == "/"){
+        $controller = "Index";
+        $active = "index";
+    }else {
+        $controller = ucfirst(explode("/", $route)[1]);
+        $active = explode("/", $route)[2];
+
+    }
+    
 }
 // 拼接类名
 $obj = "Controllers\\".$controller."Controller";
-// echo $obj,$active;
+echo "obj=".$obj;
+
 $a = new $obj;
 $a->$active();
 
@@ -68,11 +76,5 @@ function getUrl($except = []){
 
     return $str;
 
-}
-
-// 生成静态页
-function staticPage (){
-    // 开启缓存区
-    ob_start();
 }
 ?>

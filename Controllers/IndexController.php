@@ -2,6 +2,8 @@
     namespace Controllers;
 
     use Models\Index;
+    use Predis\Client;
+
     class IndexController {
 
         function index(){
@@ -28,6 +30,19 @@
 
             // 直接跳转
             header("location:/index.html");
+        }
+
+        function redis (){
+            // echo '1';
+            // exit;   
+            // 连接 Redis
+            // $redis = new \Predis\Client([
+            //     'scheme' => 'tcp',
+            //     'host'   => '127.0.0.1',
+            //     'port'   => 32768,
+            // ]);
+            // var_dump($redis);
+
         }
         
     }
