@@ -40,7 +40,7 @@
         <?php foreach( $arr as $v ): ?>
         <tr height="50">
             <td><?=$v['id']?></td>
-            <td><?=$v['title']?></td>
+            <td><a href="../staticPage/<?=$v['id']?>.html"><?=$v['title']?></a></td>
             <td><?=$v['content']?></td>
             <td><?=$v['created_at']?></td>
             <td><?=$v['created_up']?></td>

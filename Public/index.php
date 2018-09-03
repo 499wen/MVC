@@ -1,11 +1,12 @@
 <?php
 
 define("ROOT", dirname(__FILE__)."/../");
+// 引入 composer 自动加载文件
+require(ROOT.'vendor/autoload.php');
 
 // 自动加载 函数
 function autoload($class){
     $path = str_replace('\\', '/', $class);
-    echo "<br>".$path;
     require(ROOT . $path . '.php');
 }
 
@@ -34,7 +35,6 @@ if( php_sapi_name() == "cli"){
 }
 // 拼接类名
 $obj = "Controllers\\".$controller."Controller";
-echo "obj=".$obj;
 
 $a = new $obj;
 $a->$active();

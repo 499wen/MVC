@@ -13,28 +13,35 @@
             $this->pdo = new PDO("mysql:host=localhost;dbname=mvc","root","");
             $this->pdo->exec("set names utf8");
 
-            
         }
 
         function blog (){
+
             $where = "1 = 1 ";
 
+            $value = [];
             // 搜索 - title content
             if(isset($_GET['search']) && $_GET['search']){
                 $search = $_GET['search'];
-                $where .= " and title like '%{$search}%' or content like '%{$search}%'";
+                $where .= " and title like ? or content like ?";
+                $value[] = "%{$search}%";
+                $value[] = "%{$search}%";
             }
             
             // 搜索 - time_start
             if(isset($_GET['time_start']) && $_GET['time_start']){
                 $time_start = $_GET['time_start'];
-                $where .= "and created_at > '{$time_start}'";
+                $where .= "and created_at > ?";
+                $value[] = "{$time_start}";
+
             }
 
             // 搜索 - time_end
             if(isset($_GET['time_end']) && $_GET['time_end']){
                 $time_end = $_GET['time_end'];
-                $where .= "and created_at < '{$time_end}'";
+                $where .= "and created_at < ?";
+                $value[] = "{$time_end}";
+
             }
 
             // 排序 - 添加日期 - 降序 - desc
@@ -61,7 +68,8 @@
             // 计算总数据
             $sql = "select id from mvc_blog where ".$where;  
             
-            $stmt = $this->pdo->query($sql);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($value);
 
             $num = $stmt ->rowCount();
             // 当前页 
@@ -80,7 +88,8 @@
 
             // echo "select id,title,content,created_at,created_up,play from mvc_blog where {$where} limit 10";die;
             // 查询数据  
-            $stmt = $this->pdo->query("select id,title,content,created_at,created_up,play from mvc_blog where {$where} limit ".($curPage-1)*$curPage_column.",".($curPage_column));
+            $stmt = $this->pdo->prepare("select id,title,content,created_at,created_up,play from mvc_blog where {$where} limit ".($curPage-1)*$curPage_column.",".($curPage_column));
+            $stmt->execute($value);
 
             if($stmt != false){
                 $this->arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -99,11 +108,12 @@
                 $title = $this->getChar(rand(5,8));
                 $content = $this->getChar(rand(20,50));
                 $play = rand(50,500);
-                $time = date("Y-m-d H:i",rand(1123548252,1535619247)) ;
+                $time = date("Y-m-d H:i",rand(1123548252,1535619247));
+                $zan = rand(50,200);
 
-                $temt = $this->pdo->prepare("insert into mvc_blog (id,author_id,title,content,play,created_at) values(null,?,?,?,?,?)");
+                $temt = $this->pdo->prepare("insert into mvc_blog (id,author_id,title,content,play,created_at,zan) values(null,?,?,?,?,?,?)");
             
-                $aa = $temt->execute(array($author_id,$title,$content,$play,$time));
+                $aa = $temt->execute(array($author_id,$title,$content,$play,$time,$zan));
                 var_dump($aa);
             }
 

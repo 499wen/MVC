@@ -27,12 +27,14 @@
         }
 
         function cs (){
-            // $blog = new Blog;
-            // $arr = getUrl('xzc','123');
+            $blog = new Blog;
+            $arr = $blog->staticPage();
+            echo "<pre>";
+            var_dump($arr[1]);
 
             // var_dump($arr);
-            view("user.user",[
-
+            view("blog.static",[
+                'blog' => $arr[1],
             ]);
         }
         
@@ -62,8 +64,69 @@
                 ob_clean();
 
             endforeach;
-
             
             echo "ok";
+        }
+
+        // 将文章浏览量保存在 redis中
+        function redis (){
+            // 连接 Redis
+            $redis = new \Predis\Client([
+                'scheme' => 'tcp',
+                'host'   => '127.0.0.1',
+                'port'   => 6379,
+            ]);
+
+            // 获取文章id
+            $id = (int)$_GET['id'];    
+
+            // 拼出key 的值
+            $key = "blog-$id";
+
+            // 判断redis 中有没有$key
+            if($redis->hexists("blog_play",$key)){
+                // 有  就给对应的key  值+1
+                $num = $redis->hincrby("blog_play",$key,1);
+                echo $num;
+            }else {
+                // 没有就从数据库中取出
+                $blog = new Blog;
+                // var_dump($blog->pdo);
+                $stmt = $blog->pdo->query("select play from mvc_blog where id = $id");
+                $num = $stmt->fetch(\PDO::FETCH_ASSOC);
+                var_dump($num['play']);
+
+                // 保存到redis中
+                $num = $redis->hset('blog_play', $key, $num['play']);
+                echo $num;
+            }
+
+        }
+
+        // 从redis中  取出数据 更新数据库
+        function sqlToUpdate (){
+            $blog = new Blog;
+
+            // redis 取出数据
+            $redis = new \Predis\Client([
+                'scheme' => 'tcp',
+                'host'   => '127.0.0.1',
+                'port'   => 6379,
+            ]);
+
+            $arr = $redis->hgetall('blog_play');
+
+            foreach($arr as $key => $v){
+                // 将blog-2 的数字取出
+                $key = explode("-",$key);
+
+                // 更新数据库中
+                $bool = $blog->pdo->exec("update mvc_blog set play = {$v} where id = ".$key[1]);
+                if($bool){
+                    echo 'true';
+                }else {
+                    echo "false";
+                }
+            }
         }
     }

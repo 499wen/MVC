@@ -7,6 +7,31 @@
 <body>
     标题：<?=$blog['title']?>
     <br>
+    浏览量：<span id="play"></span>
+    <br>
     <h5><?=$blog['content']?></h5>
 </body>
 </html>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+$url = "/blog/redis?id=<?=$blog['id']?>";
+
+$.ajax({
+    url:$url,
+    type:"post",
+    success:function(data){
+        $("#play").append(data);
+    }
+})
+
+// $url = "/blog/sqlToUpdate?id=<?=$blog['id']?>";
+
+// $.ajax({
+//     url:$url,
+//     type:"post",
+//     success:function(data){
+//         $("#play").append(data);
+//     }
+// })
+
+</script>
