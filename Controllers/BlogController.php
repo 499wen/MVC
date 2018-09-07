@@ -2,6 +2,7 @@
     namespace Controllers;
 
     use Models\Blog;
+    use \libs\Redis;
 
     class BlogController {
 
@@ -71,14 +72,10 @@
         // 将文章浏览量保存在 redis中
         function redis (){
             // 连接 Redis
-            $redis = new \Predis\Client([
-                'scheme' => 'tcp',
-                'host'   => '127.0.0.1',
-                'port'   => 6379,
-            ]);
-
+            $redis = Redis::getInstance();
             // 获取文章id
-            $id = (int)$_GET['id'];    
+
+            $id = (int)$_GET['id'] ;    
 
             // 拼出key 的值
             $key = "blog-$id";
@@ -91,8 +88,8 @@
             }else {
                 // 没有就从数据库中取出
                 $blog = new Blog;
-                // var_dump($blog->pdo);
-                $stmt = $blog->pdo->query("select play from mvc_blog where id = $id");
+                // var_dump($blog::$pdo);
+                $stmt = $blog::$pdo->query("select play from mvc_blog where id = $id");
                 $num = $stmt->fetch(\PDO::FETCH_ASSOC);
                 var_dump($num['play']);
 
@@ -108,20 +105,17 @@
             $blog = new Blog;
 
             // redis 取出数据
-            $redis = new \Predis\Client([
-                'scheme' => 'tcp',
-                'host'   => '127.0.0.1',
-                'port'   => 6379,
-            ]);
+            $redis = Redis::getInstance();
 
             $arr = $redis->hgetall('blog_play');
-
+            echo "<pre>";
+            var_dump($arr);
             foreach($arr as $key => $v){
                 // 将blog-2 的数字取出
                 $key = explode("-",$key);
 
                 // 更新数据库中
-                $bool = $blog->pdo->exec("update mvc_blog set play = {$v} where id = ".$key[1]);
+                $bool = $blog::$pdo->exec("update mvc_blog set play = {$v} where id = ".$key[1]);
                 if($bool){
                     echo 'true';
                 }else {

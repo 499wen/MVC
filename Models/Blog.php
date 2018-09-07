@@ -1,19 +1,10 @@
 <?php
     namespace Models;
 
-    use PDO;
-    class Blog {
-
-        var $pdo;
+    class Blog extends Base {
+      
         var $arr;
         var $totalPage;
-
-        function __construct (){
-
-            $this->pdo = new PDO("mysql:host=localhost;dbname=mvc","root","");
-            $this->pdo->exec("set names utf8");
-
-        }
 
         function blog (){
 
@@ -67,8 +58,7 @@
             /*    --------------    分页 - start    ---------------     */
             // 计算总数据
             $sql = "select id from mvc_blog where ".$where;  
-            
-            $stmt = $this->pdo->prepare($sql);
+            $stmt = self::$pdo->prepare($sql);
             $stmt->execute($value);
 
             $num = $stmt ->rowCount();
@@ -88,11 +78,11 @@
 
             // echo "select id,title,content,created_at,created_up,play from mvc_blog where {$where} limit 10";die;
             // 查询数据  
-            $stmt = $this->pdo->prepare("select id,title,content,created_at,created_up,play from mvc_blog where {$where} limit ".($curPage-1)*$curPage_column.",".($curPage_column));
+            $stmt = self::$pdo->prepare("select id,title,content,created_at,created_up,play from mvc_blog where {$where} limit ".($curPage-1)*$curPage_column.",".($curPage_column));
             $stmt->execute($value);
 
             if($stmt != false){
-                $this->arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $this->arr = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 
             }else {
                 
@@ -111,7 +101,7 @@
                 $time = date("Y-m-d H:i",rand(1123548252,1535619247));
                 $zan = rand(50,200);
 
-                $temt = $this->pdo->prepare("insert into mvc_blog (id,author_id,title,content,play,created_at,zan) values(null,?,?,?,?,?,?)");
+                $temt = self::$pdo->prepare("insert into mvc_blog (id,author_id,title,content,play,created_at,zan) values(null,?,?,?,?,?,?)");
             
                 $aa = $temt->execute(array($author_id,$title,$content,$play,$time,$zan));
                 var_dump($aa);
@@ -133,8 +123,8 @@
 
         // 生成静态页面
         function staticPage (){
-            $stmt = $this->pdo->query("select id,title,content from mvc_blog");
-            $arr = $stmt ->fetchAll(PDO::FETCH_ASSOC);
+            $stmt = self::$pdo->query("select id,title,content from mvc_blog");
+            $arr = $stmt ->fetchAll(\PDO::FETCH_ASSOC);
             return $arr;
         }
 

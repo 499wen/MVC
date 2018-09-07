@@ -1,5 +1,11 @@
 <?php
 
+ini_set('session.save_handler', 'redis');  // 使用 redis 保存session
+ini_set('session.save_path', 'tcp://127.0.0.1:6379?database=3');  // 设置 redis 服务器地址
+ini_set('session.gc_maxlifetime', 600);  // 设置session过期时间为10分钟
+// 开启 session
+session_start();
+
 define("ROOT", dirname(__FILE__)."/../");
 // 引入 composer 自动加载文件
 require(ROOT.'vendor/autoload.php');
@@ -13,7 +19,6 @@ function autoload($class){
 spl_autoload_register("autoload");
 
 // 设置路由
-
 if( php_sapi_name() == "cli"){
 
     $controller = ucfirst($argv[1]);
@@ -76,5 +81,13 @@ function getUrl($except = []){
 
     return $str;
 
+}
+
+// 配置数据
+function config ($data){
+    
+    require(ROOT."config.php");
+
+    return $config[$data];
 }
 ?>
