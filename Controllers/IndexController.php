@@ -29,7 +29,10 @@
             ob_clean();
 
             // 直接跳转
-            header("location:/index.html");
+            // header("location:/index.html");
+            view("index.index",[
+                'index' => $str,
+            ]);
         }
 
         

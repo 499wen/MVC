@@ -1,0 +1,24 @@
+
+
+
+
+<?php if(isset($_SESSION['user_id'])){ ?>
+    <a href="/">首页</a>
+    <a href="/blog/blog">我的日志页</a>
+    <a href="/user/rechargePage">充值</a>
+    <a href="/user/paymantPage">我的订单</a>
+    <span style="color: aqua"><?=$_SESSION['email']?></span>
+    <span>(余额 ： <?=$_SESSION['balance']?> 元)</span>
+    <a href="/user/unLogin">退出</a>
+    <hr>
+
+    
+<?php }else{ ?>
+
+    <a href="/">首页</a>
+    <a href="/user/loginPage">登录</a>
+    <a href="/user/registPage">注册</a>
+    <a href="/blog/blog">日志页</a>
+    <hr>
+
+<?php } ?>

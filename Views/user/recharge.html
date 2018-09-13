@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>首页</title>
+    <title>Document</title>
 </head>
 <body>
     <?php view("publicPage.nav") ?>
+    <form action="/user/recharge" method="post">
 
-    <p style="font-size: 20px;"> 首页 </p>
 
-    <h3>    </h3>
-</body>
+       充值金额: <input type="text" name="money" id="">
+        <br>
+        <input type="submit" value="充值">
+
+    </form>
+</body> 
 </html>

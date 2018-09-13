@@ -5,7 +5,8 @@
     <title>用户注册</title>
 </head>
 <body>
-    <hr>
+    <?php view("publicPage.nav") ?>
+    <p>注册</p>
     <form action="/user/regist" method="post">
         注册说明：根据邮箱收到的激活码进行激活，反之您注册的账号将于5分钟后删除 <br>
         邮箱：<input type="text" name="email" id="email"><br>

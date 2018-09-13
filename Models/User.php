@@ -75,17 +75,18 @@
         function login ($data){
             echo "<pre>";
             // 查看数据库中 是否有能匹配的数据
-            $stmt = self::$pdo->prepare("select id,password from mvc_user where email = ?");
+            $stmt = self::$pdo->prepare("select * from mvc_user where email = ?");
             $arr = $stmt->execute(array(
                 $data[0],
             ));
-            // var_dump($arr)
+            
             $arr = $stmt->fetch(\PDO::FETCH_ASSOC);
-          
+            // var_dump($arr);die;
             if($arr['password'] == md5($data[1])){
-                // 将id 、 email 保存在session 中
-                $_SESSION['id'] = $arr['id'];
+                // 将id 、 email 、 balance 保存在session 中
+                $_SESSION['user_id'] = $arr['id'];
                 $_SESSION['email'] = $data[0];
+                $_SESSION['balance'] = $arr['balance'];
 
                 return  true;
             }else {
@@ -94,5 +95,35 @@
 
         }
 
+        // 添加充值数据
+        function recharge ($data){
+            // 插入数据
+            $stmt = self::$pdo->prepare("insert into mvc_order(money,user_id,order_code,status,created_at) values(?,?,?,0,now())");
+            $bool = $stmt->execute($data);
+
+            if($bool)
+            {
+                return true;
+            }else {
+                return false;
+            }
+        }
+
+        // 查询所有账单
+        function paymant ($user_id){
+            // 查询数据
+            $stmt = self::$pdo->query("select * from mvc_order where user_id = {$user_id} order by created_at desc");
+
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        // 充值成功 - 更新用户余额
+        function addMoney ($money,$id){
+            $_SESSION['balance'] += $money*1;
+            $stmt = self::$pdo->prepare("update mvc_user set balance = ? + balance where id = ?");
+            return $stmt->execute([
+                $money,$id
+            ]);
+        }
         
     }

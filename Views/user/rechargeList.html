@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <?php view("publicPage.nav") ?>
+    <table border="1" width="100%" style="text-align: center;">
+        <tr>
+            <th width="20%">订单号</th>
+            <th>充值金额</th>
+            <th>时间</th>
+            <th>状态</th>
+            <th>支付</th>
+        </tr>
+        <?php foreach($arr as $v){ ?>
+
+        <tr>
+            <td><?=$v['order_code']?></td>
+            <td><?=$v['money']?></td>
+            <td><?=$v['created_at']?></td>
+            <td><?=$v['status']=='0'? '未支付': '已支付' ; ?></td>
+            <td><?php if($v['status'] == 0){ ?>
+                <form action="/alipay/pay" method="post">
+                    <input type="hidden" name="code" value="<?=$v['order_code']?>">
+                    <input type="submit" value="支付宝 ">
+                </form>
+                <form action="/alipay/wxpay" method="post">
+                    <input type="hidden" name="code" value="<?=$v['order_code']?>">
+                    <input type="submit" value="微信 ">
+                </form>
+                <?php }else{ ?>
+
+                    <span>已完成支付</span>
+                    <form action="/alipay/payRefund" method="post">
+                        <input type="hidden" name="code" value="<?=$v['order_code']?>">
+                        <input type="hidden" name="money" value="<?=$v['money']?>">
+                        <input type="submit" value="退款">
+                    </form>
+                <?php  }?>
+            </td>
+        </tr>
+
+        <?php } ?>
+
+    </table>
+</body>
+</html>

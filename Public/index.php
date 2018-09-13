@@ -9,7 +9,6 @@ session_start();
 define("ROOT", dirname(__FILE__)."/../");
 // 引入 composer 自动加载文件
 require(ROOT.'vendor/autoload.php');
-
 // 自动加载 函数
 function autoload($class){
     $path = str_replace('\\', '/', $class);
@@ -18,32 +17,31 @@ function autoload($class){
 
 spl_autoload_register("autoload");
 
-// 设置路由
-if( php_sapi_name() == "cli"){
+    // 设置路由
+    if( php_sapi_name() == "cli"){
 
-    $controller = ucfirst($argv[1]);
-    $active = $argv[2];
+        $controller = ucfirst($argv[1]);
+        $active = $argv[2];
 
-}else {
-    $route = $_SERVER["PATH_INFO"];
-
-    // 取出控制台  与  其对应方法
-    if(isset($route) == "" || $route == "/"){
-        $controller = "Index";
-        $active = "index";
     }else {
-        $controller = ucfirst(explode("/", $route)[1]);
-        $active = explode("/", $route)[2];
+        @$route = $_SERVER["PATH_INFO"];
 
+        // 取出控制台  与  其对应方法
+        if(isset($route) == "" || $route == "/"){
+            $controller = "Index";
+            $active = "index";
+        }else {
+            $controller = ucfirst(explode("/", $route)[1]);
+            $active = explode("/", $route)[2];
+
+        }
+        
     }
-    
-}
 // 拼接类名
 $obj = "Controllers\\".$controller."Controller";
 
 $a = new $obj;
 $a->$active();
-
 // 编写加载视图函数
 function view($file , $data = []){
 
